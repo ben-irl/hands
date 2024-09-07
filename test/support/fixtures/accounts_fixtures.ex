@@ -32,16 +32,17 @@ defmodule Hands.AccountsFixtures do
   @doc """
   Generate a member_profile.
   """
-  def member_profile_fixture(attrs \\ %{}) do
-    {:ok, member_profile} =
+  def member_profile_fixture(member, attrs \\ %{}) do
+    attrs =
       attrs
       |> Enum.into(%{
         age: 42,
         gender: "some gender",
         name: "some name",
-        want_genders: "some want_genders"
+        want_genders: "some want_genders",
       })
-      |> Hands.Accounts.create_member_profile()
+
+    {:ok, member_profile} = Hands.Accounts.create_member_profile(member, attrs)
 
     member_profile
   end

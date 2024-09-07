@@ -71,13 +71,7 @@ defmodule HandsWeb.Router do
       # TODO: Placeholder
       live "/browse", MemberSettingsLive, :edit
 
-      live "/account/profile", MemberProfileLive.Index, :index
-      live "/account/profile/new", MemberProfileLive.Index, :new
-      live "/account/profile/:id/edit", MemberProfileLive.Index, :edit
-
-      live "/account/profile/:id", MemberProfileLive.Show, :show
-      live "/account/profile/:id/show/edit", MemberProfileLive.Show, :edit
-
+      live "/account/profile", MemberProfileLive, :edit
       live "/account/settings", MemberSettingsLive, :edit
       live "/account/settings/confirm_email/:token", MemberSettingsLive, :confirm_email
     end

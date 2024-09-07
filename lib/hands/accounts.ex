@@ -3,10 +3,12 @@ defmodule Hands.Accounts do
   The Accounts context.
   """
 
-  import Ecto.Query, warn: false
+  alias Hands.Accounts.Member
+  alias Hands.Accounts.MemberProfile
+  alias Hands.Accounts.MemberToken
+  alias Hands.Accounts.MemberNotifier
   alias Hands.Repo
-
-  alias Hands.Accounts.{Member, MemberToken, MemberNotifier}
+  import Ecto.Query, warn: false
 
   ## Database getters
 
@@ -351,19 +353,10 @@ defmodule Hands.Accounts do
     end
   end
 
-  alias Hands.Accounts.MemberProfile
 
-  @doc """
-  Returns the list of member_profiles.
-
-  ## Examples
-
-      iex> list_member_profiles()
-      [%MemberProfile{}, ...]
-
-  """
-  def list_member_profiles do
-    Repo.all(MemberProfile)
+  # TODO: Refactor - see `docs/hack.md`
+  def preload_member_assocs!(changeset) do
+    Repo.preload(changeset, :member_profile)
   end
 
   @doc """
@@ -380,23 +373,40 @@ defmodule Hands.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_member_profile!(id), do: Repo.get!(MemberProfile, id)
+  def get_member_profile!(id), do: Repo.get!(MemberProfile, id) |> preload_member_profile_assocs!()
+
+  def get_member_profile_by_member!(%Member{id: member_id}) do
+    get_member_profile_by_member!(member_id)
+  end
+
+  def get_member_profile_by_member!(member) do
+    member_id =
+      case member do
+        id when is_binary(id) -> id
+        %Member{id: id} -> id
+      end
+
+    query = from mp in MemberProfile, where: mp.member_id == ^member_id, preload: [:member]
+
+    Repo.one!(query)
+  end
 
   @doc """
   Creates a member_profile.
 
   ## Examples
 
-      iex> create_member_profile(%{field: value})
+      iex> create_member_profile(member, %{field: value})
       {:ok, %MemberProfile{}}
 
-      iex> create_member_profile(%{field: bad_value})
+      iex> create_member_profile(member, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_member_profile(attrs \\ %{}) do
+  def create_member_profile(member, attrs \\ %{}) do
     %MemberProfile{}
     |> MemberProfile.changeset(attrs)
+    |> MemberProfile.put_member(member)
     |> Repo.insert()
   end
 
@@ -445,5 +455,10 @@ defmodule Hands.Accounts do
   """
   def change_member_profile(%MemberProfile{} = member_profile, attrs \\ %{}) do
     MemberProfile.changeset(member_profile, attrs)
+  end
+
+  # TODO: Refactor - see `docs/hack.md`
+  def preload_member_profile_assocs!(struct) do
+    Repo.preload(struct, [:member])
   end
 end

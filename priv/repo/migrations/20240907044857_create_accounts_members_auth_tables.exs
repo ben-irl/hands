@@ -4,7 +4,8 @@ defmodule Hands.Repo.Migrations.CreateAccountsMembersAuthTables do
   def change do
     execute "CREATE EXTENSION IF NOT EXISTS citext", ""
 
-    create table(:accounts_members) do
+    create table(:accounts_members, primary_key: false) do
+      add :id, :binary_id, primary_key: true
       add :email, :citext, null: false
       add :hashed_password, :string, null: false
       add :confirmed_at, :utc_datetime
@@ -15,7 +16,8 @@ defmodule Hands.Repo.Migrations.CreateAccountsMembersAuthTables do
     create unique_index(:accounts_members, [:email])
 
     create table(:accounts_members_tokens) do
-      add :member_id, references(:accounts_members, on_delete: :delete_all), null: false
+      add :member_id, references(:accounts_members, type: :binary_id, on_delete: :delete_all), null: false
+
       add :token, :binary, null: false
       add :context, :string, null: false
       add :sent_to, :string

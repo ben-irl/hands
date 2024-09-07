@@ -1,13 +1,19 @@
 defmodule Hands.Accounts.Member do
   use Ecto.Schema
+  alias Hands.Accounts.MemberProfile
   import Ecto.Changeset
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
   schema "accounts_members" do
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
+
+    # TODO: Fix this terrible hacky hack!
+    has_one :profile, MemberProfile, on_replace: :nilify
 
     timestamps(type: :utc_datetime)
   end
@@ -38,6 +44,7 @@ defmodule Hands.Accounts.Member do
   def registration_changeset(member, attrs, opts \\ []) do
     member
     |> cast(attrs, [:email, :password])
+    |> put_assoc(:profile, %MemberProfile{})
     |> validate_email(opts)
     |> validate_password(opts)
   end

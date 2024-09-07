@@ -13,10 +13,12 @@ defmodule Hands.Accounts.MemberToken do
   @change_email_validity_in_days 7
   @session_validity_in_days 60
 
+  @foreign_key_type :binary_id
   schema "accounts_members_tokens" do
     field :token, :binary
     field :context, :string
     field :sent_to, :string
+
     belongs_to :member, Hands.Accounts.Member
 
     timestamps(type: :utc_datetime, updated_at: false)
