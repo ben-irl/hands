@@ -37,9 +37,9 @@ defmodule Hands.AccountsFixtures do
       attrs
       |> Enum.into(%{
         age: 42,
-        gender: "some gender",
+        gender: "man",
         name: "some name",
-        want_genders: "some want_genders",
+        want_genders: ["woman"],
       })
 
     {:ok, member_profile} = Hands.Accounts.create_member_profile(member, attrs)

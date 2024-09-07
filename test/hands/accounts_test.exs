@@ -530,13 +530,13 @@ defmodule Hands.AccountsTest do
     end
 
     test "create_member_profile/1 with valid data creates a member_profile", %{member: member} do
-      valid_attrs = %{name: "some name", age: 42, gender: "some gender", want_genders: "some want_genders"}
+      valid_attrs = %{name: "some name", age: 26, gender: "non_binary", want_genders: ["man", "woman"]}
 
       assert {:ok, %MemberProfile{} = member_profile} = Accounts.create_member_profile(member, valid_attrs)
       assert member_profile.name == "some name"
-      assert member_profile.age == 42
-      assert member_profile.gender == "some gender"
-      assert member_profile.want_genders == "some want_genders"
+      assert member_profile.age == 26
+      assert member_profile.gender == :non_binary
+      assert member_profile.want_genders == ["man", "woman"]
     end
 
     test "create_member_profile/1 with invalid data returns error changeset", %{member: member} do
@@ -545,13 +545,13 @@ defmodule Hands.AccountsTest do
 
     test "update_member_profile/2 with valid data updates the member_profile", %{member: member}  do
       member_profile = member_profile_fixture(member)
-      update_attrs = %{name: "some updated name", age: 43, gender: "some updated gender", want_genders: "some updated want_genders"}
+      update_attrs = %{name: "some updated name", age: 26, gender: "man", want_genders: ["woman"]}
 
       assert {:ok, %MemberProfile{} = member_profile} = Accounts.update_member_profile(member_profile, update_attrs)
       assert member_profile.name == "some updated name"
-      assert member_profile.age == 43
-      assert member_profile.gender == "some updated gender"
-      assert member_profile.want_genders == "some updated want_genders"
+      assert member_profile.age == 26
+      assert member_profile.gender == :man
+      assert member_profile.want_genders == ["woman"]
     end
 
     test "update_member_profile/2 with invalid data returns error changeset", %{member: member}  do

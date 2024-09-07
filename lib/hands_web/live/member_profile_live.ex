@@ -20,10 +20,37 @@ defmodule HandsWeb.MemberProfileLive do
           Oops, something went wrong! Please check the errors below.
         </.error>
 
+
         <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:age]} type="number" label="Age" />
-        <.input field={@form[:gender]} type="text" label="Gender" />
-        <.input field={@form[:want_genders]} type="text" label="Want genders" />
+
+        <label class="block text-sm font-semibold text-zinc-800">I am a...</label>
+        <div class="flex items-center m-0 p-0" style="margin: 0;padding:0">
+          <.input
+            field={@form[:age]}
+            type="number"
+          />
+          <span class="w-20 px-4">yr old</span>
+          <.input
+            field={@form[:gender]}
+            type="select"
+            options={["Please select": nil, "Woman": "woman", "Man": "man", "Non-binary": "non_binary"]}
+          />
+        </div>
+
+        <.input
+          field={@form[:want_genders]}
+          type="select"
+          label="Looking to meet..."
+          options={["Woman": "woman", "Man": "man", "Non-binary": "non_binary"]}
+          multiple
+        />
+
+        <label class="block text-sm font-semibold text-zinc-800">Between the ages of...</label>
+        <div class="flex items-center m-0 p-0" style="margin: 0;padding:0">
+          <.input field={@form[:want_age_start]} type="number" placeholder="19" class="w-56" />
+          <span class="px-4">and</span>
+          <.input field={@form[:want_age_end]} type="number" placeholder="120" class="w-56"  />
+        </div>
 
         <:actions>
           <.button phx-disable-with="Updating your profile..." class="w-full">Update your profile</.button>

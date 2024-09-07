@@ -8,7 +8,9 @@ defmodule Hands.Repo.Migrations.CreateMemberProfiles do
       add :name, :string
       add :age, :integer
       add :gender, :string
-      add :want_genders, :string
+      add :want_genders, {:array, :string}
+      add :want_age_start, :integer
+      add :want_age_end, :integer
       add :is_ready, :boolean
 
       timestamps(type: :utc_datetime)
