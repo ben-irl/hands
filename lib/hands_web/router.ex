@@ -68,10 +68,8 @@ defmodule HandsWeb.Router do
     live_session :require_authenticated_member,
       on_mount: [{HandsWeb.MemberAuth, :ensure_authenticated}] do
 
-      # TODO: Placeholder
-      live "/browse", MemberSettingsLive, :edit
-
-      live "/account/profile", MemberProfileLive, :edit
+      live "/browse", BrowseLive, :index
+      live "/account/profile", MemberProfileLive, :index
       live "/account/settings", MemberSettingsLive, :edit
       live "/account/settings/confirm_email/:token", MemberSettingsLive, :confirm_email
     end

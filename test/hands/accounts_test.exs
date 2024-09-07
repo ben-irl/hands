@@ -2,9 +2,9 @@ defmodule Hands.AccountsTest do
   use Hands.DataCase
 
   alias Hands.Accounts
-
+  alias Hands.Accounts.Member
+  alias Hands.Accounts.MemberToken
   import Hands.AccountsFixtures
-  alias Hands.Accounts.{Member, MemberToken}
 
   describe "get_member_by_email/1" do
     test "does not return the member if the email does not exist" do
