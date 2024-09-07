@@ -17,6 +17,9 @@ but just there to keep tests happy!
 - Age
   - Make this based on dob
 
+- Location and Times
+  - Add when and where member can meet up with others
+
 
 ## General Errors
 

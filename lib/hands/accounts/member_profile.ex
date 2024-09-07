@@ -5,7 +5,7 @@ defmodule Hands.Accounts.MemberProfile do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
-  schema "member_profiles" do
+  schema "accounts_member_profiles" do
     belongs_to :member, Member
 
     field :name, :string

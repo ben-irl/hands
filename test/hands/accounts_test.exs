@@ -506,7 +506,7 @@ defmodule Hands.AccountsTest do
     end
   end
 
-  describe "member_profiles" do
+  describe "accounts_member_profiles" do
     alias Hands.Accounts.MemberProfile
     import Hands.AccountsFixtures
 
