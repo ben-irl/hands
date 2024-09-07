@@ -5,7 +5,6 @@ defmodule Hands.Browse do
   alias Hands.Browse.LikedEvent
   alias Hands.Browse.SeenEvent
   alias Hands.Repo
-  import Ecto.Query, warn: false
 
   @doc """
   Creates a seen_event.

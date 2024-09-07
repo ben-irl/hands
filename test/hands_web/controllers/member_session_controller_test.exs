@@ -66,7 +66,7 @@ defmodule HandsWeb.MemberSessionControllerTest do
         })
 
       assert redirected_to(conn) == ~p"/browse"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Account created successfully"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Just one more step, we need to know about about you..."
     end
 
     test "login following password update", %{conn: conn, member: member} do

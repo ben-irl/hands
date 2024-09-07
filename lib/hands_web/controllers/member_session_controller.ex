@@ -5,7 +5,7 @@ defmodule HandsWeb.MemberSessionController do
   alias HandsWeb.MemberAuth
 
   def create(conn, %{"_action" => "registered"} = params) do
-    create(conn, params, "Account created successfully!")
+    create(conn, params, "Just one more step, we need to know about about you...")
   end
 
   def create(conn, %{"_action" => "password_updated"} = params) do

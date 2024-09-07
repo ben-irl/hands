@@ -233,7 +233,10 @@ defmodule Hands.Accounts do
   """
   def get_member_by_session_token(token) do
     {:ok, query} = MemberToken.verify_session_token_query(token)
-    Repo.one(query)
+
+    query
+    |> Repo.one()
+    |> preload_member_assocs!()
   end
 
   @doc """
@@ -323,7 +326,7 @@ defmodule Hands.Accounts do
   """
   def get_member_by_reset_password_token(token) do
     with {:ok, query} <- MemberToken.verify_email_token_query(token, "reset_password"),
-         %Member{} = member <- Repo.one(query) do
+         %Member{} = member <- Repo.one(query) |> preload_member_assocs!() do
       member
     else
       _ -> nil
@@ -356,7 +359,7 @@ defmodule Hands.Accounts do
 
   # TODO: Refactor - see `docs/hack.md`
   def preload_member_assocs!(changeset) do
-    Repo.preload(changeset, :member_profile)
+    Repo.preload(changeset, :profile)
   end
 
   @doc """

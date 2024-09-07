@@ -16,6 +16,9 @@ defmodule Hands.Accounts.MemberProfile do
     field :want_age_end, :integer, default: 120
     field :is_ready, :boolean, default: false
 
+    # Placeholder for photo upload
+    # field :photo_url, :string
+
     timestamps(type: :utc_datetime)
   end
 

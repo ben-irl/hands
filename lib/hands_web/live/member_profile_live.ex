@@ -53,7 +53,7 @@ defmodule HandsWeb.MemberProfileLive do
         </div>
 
         <:actions>
-          <.button phx-disable-with="Updating your profile..." class="w-full">Update your profile</.button>
+          <.button phx-disable-with="Searching profiles..." class="w-full">Start looking for matches</.button>
         </:actions>
       </.simple_form>
     </div>
