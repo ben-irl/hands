@@ -2,6 +2,8 @@
 
 Might be worth refactoring at a later date.
 
+**Search 'TODO' for more**
+
 ## Preloads
 
 Member and MemberProfile are preloading each other which isn't really required
@@ -19,7 +21,6 @@ but just there to keep tests happy!
 
 - Location and Times
   - Add when and where member can meet up with others
-
 
 ## General Errors
 

@@ -519,7 +519,7 @@ defmodule Hands.AccountsTest do
     test "get_member_profile!/1 returns the member_profile with given id", %{member: member}  do
       member_profile_1 = member_profile_fixture(member)
 
-      # TODO: Refactor: See: docs/hacks.md
+      # TODO: Refactor: See: docs/refactoring.md
       member_profile_2 = Accounts.get_member_profile!(member_profile_1.id)
 
       assert member_profile_1.member_id == member_profile_2.member_id
@@ -558,7 +558,7 @@ defmodule Hands.AccountsTest do
       member_profile_1 = member_profile_fixture(member)
       assert {:error, %Ecto.Changeset{}} = Accounts.update_member_profile(member_profile_1, @invalid_attrs)
 
-      # TODO: Refactor: See: docs/hacks.md
+      # TODO: Refactor: See: docs/refactoring.md
       member_profile_2 = Accounts.get_member_profile!(member_profile_1.id)
 
       assert member_profile_1.member_id == member_profile_2.member_id

@@ -44,11 +44,11 @@ defmodule HandsWeb.BrowseLive do
 
     case reaction do
       :pass ->
-        Browse.create_seen_event!(member_id, seen_member_id)
+        Browse.create_seen!(member_id, seen_member_id)
 
       :like ->
-        Browse.create_seen_event!(member_id, seen_member_id)
-        Browse.create_liked_event!(member_id, seen_member_id)
+        Browse.create_seen!(member_id, seen_member_id)
+        Browse.create_like!(member_id, seen_member_id)
     end
 
     {:noreply, assign_form(socket)}

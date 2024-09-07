@@ -14,7 +14,7 @@ placeholders = %{inserted_at: DateTime.truncate(DateTime.utc_now(), :second)}
 
 
 members =
-  Enum.map(1..100, fn _ ->
+  Enum.map(1..10, fn _ ->
     %{
       id: Ecto.UUID.generate(),
       email: Faker.Internet.safe_email(),
