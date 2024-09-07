@@ -1,9 +1,11 @@
 defmodule HandsWeb.BrowseLive do
   use HandsWeb, :live_view
   alias HandsWeb.BrowseForm
+  alias Hands.Shared.Topics
   alias Hands.Browse
   alias Hands.Query
 
+  @impl true
   def render(assigns) do
     ~H"""
     <div class="mx-auto max-w-sm">
@@ -34,10 +36,17 @@ defmodule HandsWeb.BrowseLive do
     """
   end
 
+  @impl true
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      member_id = socket.assigns.current_member.id
+      Phoenix.PubSub.subscribe(Hands.PubSub, Topics.member_topic(member_id))
+    end
+
     {:ok, assign_form(socket)}
   end
 
+  @impl true
   def handle_event("react", %{"browse_form" => form_params}, socket) do
     %{id: member_id} = socket.assigns.current_member
     %{reaction: reaction, member_id: seen_member_id} = BrowseForm.new!(form_params)

@@ -15,6 +15,9 @@ defmodule Hands.Application do
       # Start the Finch HTTP client for sending emails
       {Finch, name: Hands.Finch},
       Hands.Browse.MatchmakerServer,
+      Hands.Chat.RoomRegistry,
+      Hands.Chat.RoomDynamicSupervisor,
+      Hands.Chat.RoomKeeperServer,
       # Start a worker by calling: Hands.Worker.start_link(arg)
       # {Hands.Worker, arg},
       # Start to serve requests, typically the last entry

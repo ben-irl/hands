@@ -61,6 +61,12 @@ defmodule HandsWeb.MemberProfileLive do
   end
 
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      member_id = socket.assigns.current_member.id
+      Phoenix.PubSub.subscribe(Hands.PubSub, Hands.Shared.Topics.member_topic(member_id))
+
+    end
+
     %{assigns: %{current_member: current_member}} = socket
 
     changeset =
@@ -103,6 +109,14 @@ defmodule HandsWeb.MemberProfileLive do
       |> Map.put(:action, :validate)
 
     {:noreply, assign_form(socket, changeset)}
+  end
+
+  def handle_info(%Hands.Chat.Events.RoomOpened{room_id: room_id}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_info(_other_events, socket) do
+    {:noreply, socket}
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do

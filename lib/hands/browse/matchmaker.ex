@@ -29,7 +29,7 @@ defmodule Hands.Browse.Matchmaker do
         limit: 500
 
     Repo.all(query)
-end
+  end
 
   defp bulk_create_matches(mutual_likes) do
     matches_attrs =
@@ -40,12 +40,16 @@ end
         %{
           member_1_id: member_1_id,
           member_2_id: member_2_id,
+          is_used: {:placeholder, :is_used},
           inserted_at: {:placeholder, :inserted_at},
           updated_at: {:placeholder, :inserted_at}
         }
       end)
 
-    placeholders = %{inserted_at: DateTime.truncate(DateTime.utc_now(), :second)}
+    placeholders = %{
+      inserted_at: DateTime.truncate(DateTime.utc_now(), :second),
+      is_used: false
+    }
 
     Repo.insert_all(Match, matches_attrs, [
       on_conflict: :nothing,

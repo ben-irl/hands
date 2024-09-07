@@ -74,6 +74,11 @@ defmodule HandsWeb.MemberSettingsLive do
   end
 
   def mount(%{"token" => token}, _session, socket) do
+    if connected?(socket) do
+      member_id = socket.assigns.current_member.id
+      Phoenix.PubSub.subscribe(Hands.PubSub, Hands.Shared.Topics.member_topic(member_id))
+    end
+
     socket =
       case Accounts.update_member_email(socket.assigns.current_member, token) do
         :ok ->
@@ -163,5 +168,13 @@ defmodule HandsWeb.MemberSettingsLive do
       {:error, changeset} ->
         {:noreply, assign(socket, password_form: to_form(changeset))}
     end
+  end
+
+  def handle_info(%Hands.Chat.Events.RoomOpened{room_id: room_id}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_info(_other_events, socket) do
+    {:noreply, socket}
   end
 end
