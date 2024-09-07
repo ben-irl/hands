@@ -505,4 +505,64 @@ defmodule Hands.AccountsTest do
       refute inspect(%Member{password: "123456"}) =~ "password: \"123456\""
     end
   end
+
+  describe "member_profiles" do
+    alias Hands.Accounts.MemberProfile
+
+    import Hands.AccountsFixtures
+
+    @invalid_attrs %{name: nil, age: nil, gender: nil, want_genders: nil}
+
+    test "list_member_profiles/0 returns all member_profiles" do
+      member_profile = member_profile_fixture()
+      assert Accounts.list_member_profiles() == [member_profile]
+    end
+
+    test "get_member_profile!/1 returns the member_profile with given id" do
+      member_profile = member_profile_fixture()
+      assert Accounts.get_member_profile!(member_profile.id) == member_profile
+    end
+
+    test "create_member_profile/1 with valid data creates a member_profile" do
+      valid_attrs = %{name: "some name", age: 42, gender: "some gender", want_genders: "some want_genders"}
+
+      assert {:ok, %MemberProfile{} = member_profile} = Accounts.create_member_profile(valid_attrs)
+      assert member_profile.name == "some name"
+      assert member_profile.age == 42
+      assert member_profile.gender == "some gender"
+      assert member_profile.want_genders == "some want_genders"
+    end
+
+    test "create_member_profile/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_member_profile(@invalid_attrs)
+    end
+
+    test "update_member_profile/2 with valid data updates the member_profile" do
+      member_profile = member_profile_fixture()
+      update_attrs = %{name: "some updated name", age: 43, gender: "some updated gender", want_genders: "some updated want_genders"}
+
+      assert {:ok, %MemberProfile{} = member_profile} = Accounts.update_member_profile(member_profile, update_attrs)
+      assert member_profile.name == "some updated name"
+      assert member_profile.age == 43
+      assert member_profile.gender == "some updated gender"
+      assert member_profile.want_genders == "some updated want_genders"
+    end
+
+    test "update_member_profile/2 with invalid data returns error changeset" do
+      member_profile = member_profile_fixture()
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_member_profile(member_profile, @invalid_attrs)
+      assert member_profile == Accounts.get_member_profile!(member_profile.id)
+    end
+
+    test "delete_member_profile/1 deletes the member_profile" do
+      member_profile = member_profile_fixture()
+      assert {:ok, %MemberProfile{}} = Accounts.delete_member_profile(member_profile)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_member_profile!(member_profile.id) end
+    end
+
+    test "change_member_profile/1 returns a member_profile changeset" do
+      member_profile = member_profile_fixture()
+      assert %Ecto.Changeset{} = Accounts.change_member_profile(member_profile)
+    end
+  end
 end

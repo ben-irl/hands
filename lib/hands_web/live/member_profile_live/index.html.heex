@@ -1,0 +1,51 @@
+<.header>
+  Listing Member profiles
+  <:actions>
+    <.link patch={~p"/account/profile/new"}>
+      <.button>New Member profile</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="member_profiles"
+  rows={@streams.member_profiles}
+  row_click={fn {_id, member_profile} -> JS.navigate(~p"/account/profile/#{member_profile}") end}
+>
+  <:col :let={{_id, member_profile}} label="Name"><%= member_profile.name %></:col>
+  <:col :let={{_id, member_profile}} label="Age"><%= member_profile.age %></:col>
+  <:col :let={{_id, member_profile}} label="Gender"><%= member_profile.gender %></:col>
+  <:col :let={{_id, member_profile}} label="Want genders">
+    <%= member_profile.want_genders %>
+  </:col>
+  <:action :let={{_id, member_profile}}>
+    <div class="sr-only">
+      <.link navigate={~p"/account/profile/#{member_profile}"}>Show</.link>
+    </div>
+    <.link patch={~p"/account/profile/#{member_profile}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, member_profile}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: member_profile.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="member_profile-modal"
+  show
+  on_cancel={JS.patch(~p"/account/profile")}
+>
+  <.live_component
+    module={HandsWeb.MemberProfileLive.FormComponent}
+    id={@member_profile.id || :new}
+    title={@page_title}
+    action={@live_action}
+    member_profile={@member_profile}
+    patch={~p"/account/profile"}
+  />
+</.modal>

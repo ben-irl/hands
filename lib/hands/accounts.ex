@@ -350,4 +350,100 @@ defmodule Hands.Accounts do
       {:error, :member, changeset, _} -> {:error, changeset}
     end
   end
+
+  alias Hands.Accounts.MemberProfile
+
+  @doc """
+  Returns the list of member_profiles.
+
+  ## Examples
+
+      iex> list_member_profiles()
+      [%MemberProfile{}, ...]
+
+  """
+  def list_member_profiles do
+    Repo.all(MemberProfile)
+  end
+
+  @doc """
+  Gets a single member_profile.
+
+  Raises `Ecto.NoResultsError` if the Member profile does not exist.
+
+  ## Examples
+
+      iex> get_member_profile!(123)
+      %MemberProfile{}
+
+      iex> get_member_profile!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_member_profile!(id), do: Repo.get!(MemberProfile, id)
+
+  @doc """
+  Creates a member_profile.
+
+  ## Examples
+
+      iex> create_member_profile(%{field: value})
+      {:ok, %MemberProfile{}}
+
+      iex> create_member_profile(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_member_profile(attrs \\ %{}) do
+    %MemberProfile{}
+    |> MemberProfile.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a member_profile.
+
+  ## Examples
+
+      iex> update_member_profile(member_profile, %{field: new_value})
+      {:ok, %MemberProfile{}}
+
+      iex> update_member_profile(member_profile, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_member_profile(%MemberProfile{} = member_profile, attrs) do
+    member_profile
+    |> MemberProfile.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a member_profile.
+
+  ## Examples
+
+      iex> delete_member_profile(member_profile)
+      {:ok, %MemberProfile{}}
+
+      iex> delete_member_profile(member_profile)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_member_profile(%MemberProfile{} = member_profile) do
+    Repo.delete(member_profile)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking member_profile changes.
+
+  ## Examples
+
+      iex> change_member_profile(member_profile)
+      %Ecto.Changeset{data: %MemberProfile{}}
+
+  """
+  def change_member_profile(%MemberProfile{} = member_profile, attrs \\ %{}) do
+    MemberProfile.changeset(member_profile, attrs)
+  end
 end

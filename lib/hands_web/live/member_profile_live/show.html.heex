@@ -1,0 +1,34 @@
+<.header>
+  Member profile <%= @member_profile.id %>
+  <:subtitle>This is a member_profile record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/account/profile/#{@member_profile}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit member_profile</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @member_profile.name %></:item>
+  <:item title="Age"><%= @member_profile.age %></:item>
+  <:item title="Gender"><%= @member_profile.gender %></:item>
+  <:item title="Want genders"><%= @member_profile.want_genders %></:item>
+</.list>
+
+<.back navigate={~p"/account/profile"}>Back to member_profiles</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="member_profile-modal"
+  show
+  on_cancel={JS.patch(~p"/account/profile/#{@member_profile}")}
+>
+  <.live_component
+    module={HandsWeb.MemberProfileLive.FormComponent}
+    id={@member_profile.id}
+    title={@page_title}
+    action={@live_action}
+    member_profile={@member_profile}
+    patch={~p"/account/profile/#{@member_profile}"}
+  />
+</.modal>

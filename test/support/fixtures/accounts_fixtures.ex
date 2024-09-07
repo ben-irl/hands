@@ -28,4 +28,21 @@ defmodule Hands.AccountsFixtures do
     [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
     token
   end
+
+  @doc """
+  Generate a member_profile.
+  """
+  def member_profile_fixture(attrs \\ %{}) do
+    {:ok, member_profile} =
+      attrs
+      |> Enum.into(%{
+        age: 42,
+        gender: "some gender",
+        name: "some name",
+        want_genders: "some want_genders"
+      })
+      |> Hands.Accounts.create_member_profile()
+
+    member_profile
+  end
 end
