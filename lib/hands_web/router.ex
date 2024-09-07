@@ -73,6 +73,15 @@ defmodule HandsWeb.Router do
       live "/account/settings", MemberSettingsLive, :edit
       live "/account/settings/confirm_email/:token", MemberSettingsLive, :confirm_email
     end
+
+    live_session :require_authenticated_room_member,
+      on_mount: [
+        {HandsWeb.MemberAuth, :ensure_authenticated},
+        # {HandsWeb.RoomMemberAuth, :ensure_room_member}
+      ] do
+
+      live "/chat/:room_id", ChatRoomLive, :index
+    end
   end
 
   scope "/", HandsWeb do

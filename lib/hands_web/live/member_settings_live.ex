@@ -171,7 +171,9 @@ defmodule HandsWeb.MemberSettingsLive do
   end
 
   def handle_info(%Hands.Chat.Events.RoomOpened{room_id: room_id}, socket) do
-    {:noreply, socket}
+    {:noreply,
+      socket
+      |> redirect(to: ~p"/chat/#{room_id}")}
   end
 
   def handle_info(_other_events, socket) do

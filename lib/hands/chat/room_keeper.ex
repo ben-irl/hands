@@ -84,7 +84,7 @@ defmodule Hands.Chat.RoomKeeper do
       member_2_id: member_2_id
     } = room
 
-    event = %Events.RoomOpened{room_id: room_id}
+    event = %Events.RoomOpened{room_id: room_id, occured_at: DateTime.utc_now()}
 
     :ok = broadcast_to_member!(member_1_id, event)
     :ok = broadcast_to_member!(member_2_id, event)
