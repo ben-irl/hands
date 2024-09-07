@@ -11,8 +11,8 @@ defmodule Hands.Browse.Matchmaker do
     fetch_mutual_liker()
     |> Enum.chunk_every(10)
     |> Enum.each(fn mutual_likes ->
-      bulk_mark_likes_as_matched(mutual_likes)
-      bulk_create_matches(mutual_likes)
+      matches_attrs = bulk_create_matches(mutual_likes)
+      bulk_mark_likes_as_matched(matches_attrs)
     end)
   end
 
@@ -29,30 +29,15 @@ defmodule Hands.Browse.Matchmaker do
         limit: 500
 
     Repo.all(query)
-  end
-
-  defp bulk_mark_likes_as_matched(mutual_likes) do
-    mutual_ids =
-        mutual_likes
-        |> Enum.reduce([], fn [m1, m2], acc -> [m1, m2 | acc] end)
-        |> Enum.uniq()
-
-      like_matched_query =
-        from l in Like,
-          where: l.member_id in ^mutual_ids,
-          or_where: l.liked_member_id in ^mutual_ids
-
-    Repo.update_all(like_matched_query, set: [is_matched: true])
-  end
+end
 
   defp bulk_create_matches(mutual_likes) do
-    matches =
+    matches_attrs =
       mutual_likes
       |> Enum.map(fn [_, _ ] = mutual_like ->
         [member_1_id, member_2_id] = Enum.sort(mutual_like)
 
         %{
-          id: Ecto.UUID.autogenerate(),
           member_1_id: member_1_id,
           member_2_id: member_2_id,
           inserted_at: {:placeholder, :inserted_at},
@@ -62,9 +47,35 @@ defmodule Hands.Browse.Matchmaker do
 
     placeholders = %{inserted_at: DateTime.truncate(DateTime.utc_now(), :second)}
 
-    Repo.insert_all(Match, matches, [
+    Repo.insert_all(Match, matches_attrs, [
       on_conflict: :nothing,
       placeholders: placeholders
     ])
+
+    matches_attrs
   end
+
+  defp bulk_mark_likes_as_matched([]), do: []
+  defp bulk_mark_likes_as_matched(matches_attrs) when is_list(matches_attrs) do
+    # TODO: Refactor!
+    # Must be at least one where query or this will set everything to matched!
+    [%{member_1_id: member_1_id, member_2_id: member_2_id} | rem_match_attrs] = matches_attrs
+
+    init_query =
+      from l in Like,
+        where: l.member_id == ^member_1_id and l.liked_member_id == ^member_2_id,
+        or_where: l.member_id == ^member_2_id and l.liked_member_id == ^member_1_id
+
+    query =
+      rem_match_attrs
+      |> Enum.reduce(init_query, fn
+        %{member_1_id: member_1_id, member_2_id: member_2_id}, query ->
+          from l in query,
+            or_where: l.member_id == ^member_1_id and l.liked_member_id == ^member_2_id,
+            or_where: l.member_id == ^member_2_id and l.liked_member_id == ^member_1_id
+      end)
+
+    Repo.update_all(query, set: [is_matched: true])
+  end
+
 end
