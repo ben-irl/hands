@@ -33,6 +33,7 @@ defmodule HandsWeb.ChatRoomLive do
       <main
         id="app-chat-messages"
         phx-update="stream"
+        class="pb-8"
       >
         <div id={dom_id} :for={{dom_id, message} <- @streams.messages}>
           <p class={member_msg_class(@member_1_id, @member_2_id, message.member_id)}><%= message.message %></p>
@@ -46,7 +47,7 @@ defmodule HandsWeb.ChatRoomLive do
 
       <.simple_form for={@form} phx-submit="send" class="m-0 p-0 bg-white">
         <div
-          class="w-full fixed left-0 bottom-0 right-0 flex items-center m-0 p-4 border-t border-zinc-300"
+          class="w-full fixed left-0 bottom-0 right-0 flex items-center m-0 p-4 border-t border-zinc-300 bg-white"
           style="margin: 0;"
         >
           <span class="flex-auto mr-2">
