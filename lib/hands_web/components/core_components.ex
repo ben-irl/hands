@@ -45,17 +45,10 @@ defmodule HandsWeb.CoreComponents do
   defp brand_location_class("sm"), do: "text-lg text-zinc-800"
 
   def brand_tag() do
-    "Ut in erat finibus, vehicula velit ut, dignissim massa"
+    "Find a date in your lunch break."
   end
 
   # defp brand_tag(), do: "Real dates in 10 minutes."
-
-  def brand_description() do
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut in erat " <>
-    "finibus, vehicula velit ut, dignissim massa. Nullam vitae ullamcorper " <>
-    "ipsum, eu efficitur ipsum. Nulla at nisl ut orci malesuada faucibus quis " <>
-    "eget enim. Phasellus nec lacus et ligula dignissim tincidunt."
-  end
 
   @doc """
   Renders a modal.

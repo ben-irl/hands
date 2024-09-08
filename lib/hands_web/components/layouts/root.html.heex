@@ -12,8 +12,9 @@
     </script>
   </head>
   <body class="bg-white">
-    <ul class="relative z-10 flex items-center gap-4 px-4 py-2 sm:px-6 lg:px-8 justify-end border-b border-zinc-300">
-      <%= if @current_member do %>
+    <%= if @current_member do %>
+      <ul class="relative z-10 flex items-center gap-4 px-4 py-2 sm:px-6 lg:px-8 justify-end border-b border-zinc-300">
+        <%!-- <%= if @current_member do %> --%>
         <li class="flex-grow">
           <.link href="/">
             <.brand id="app-brand-head" size="md" />
@@ -47,7 +48,7 @@
             Log out
           </.link>
         </li>
-      <% else %>
+        <%!-- <% else %>
         <li class="flex-grow">
           <.link href="/">
             <.brand id="app-brand-head" size="md" />
@@ -68,9 +69,10 @@
           >
             Log in
           </.link>
-        </li>
-      <% end %>
-    </ul>
+        </li> --%>
+        <%!-- <% end %> --%>
+      </ul>
+    <% end %>
     <%= @inner_content %>
   </body>
 </html>

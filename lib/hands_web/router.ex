@@ -81,6 +81,7 @@ defmodule HandsWeb.Router do
       ] do
 
       live "/chat/:room_id", ChatRoomLive, :index
+      live "/chat/feedback", ChatFeedbackLive, :index
     end
   end
 
