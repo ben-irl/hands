@@ -17,6 +17,10 @@ defmodule Hands.Chat.RoomServer do
     GenServer.call(via(room_id), :fetch_rem_seconds!)
   end
 
+  def fetch_member_ids!(room_id) do
+    GenServer.call(via(room_id), :fetch_member_ids!)
+  end
+
   def send_message(room_id, member_id, message) do
     GenServer.call(via(room_id), {:send_message, {member_id, message}})
   end
@@ -71,6 +75,12 @@ defmodule Hands.Chat.RoomServer do
     rem_seconds = DateTime.diff(closes_at, DateTime.utc_now(), :second)
 
     {:reply, rem_seconds, state}
+  end
+
+  def handle_call(:fetch_member_ids!, _from, %Room{} = state) do
+    %{member_1_id: member_1_id, member_2_id: member_2_id} = state
+
+    {:reply, [member_1_id, member_2_id], state}
   end
 
   def handle_call({:notify_joined, member_id}, _from, %Room{} = state) do

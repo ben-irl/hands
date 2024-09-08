@@ -2,6 +2,7 @@ defmodule HandsWeb.ChatRoomLive do
   use HandsWeb, :live_view
   alias HandsWeb.ChatRoomForm
   alias Hands.Shared.Topics
+  alias Hands.Accounts
   alias Hands.Chat.RoomServer
   alias Hands.Chat.Events
 
@@ -9,12 +10,23 @@ defmodule HandsWeb.ChatRoomLive do
   def render(assigns) do
     ~H"""
     <div>
-      <div
-        id="app-room-countdown"
-        phx-update="ignore"
-        phx-hook="Countdown"
-        data-startsecs={@rem_seconds}
-      >
+      <div class="app-chat-members m-auto flex items-center">
+        <div class="py-2 px-4 rounded-full bg-green-100">
+          <.icon name="hero-user-solid" class="m-auto text-zinc-600 w-8 h-8" />
+          <div class="inline-block"><%= @member_1_profile.name %></div>
+        </div>
+        <div
+          id="app-room-countdown"
+          class="px-4"
+          phx-update="ignore"
+          phx-hook="Countdown"
+          data-startsecs={@rem_seconds}
+        >
+        </div>
+        <div class="py-2 px-4 rounded-full bg-orange-100">
+          <.icon name="hero-user-solid" class="m-auto text-zinc-600 w-8 h-8" />
+          <div class="inline-block"><%= @member_2_profile.name %></div>
+        </div>
       </div>
 
       <.simple_form for={@form} phx-submit="send" class="m-0 p-0">
@@ -47,12 +59,17 @@ defmodule HandsWeb.ChatRoomLive do
     end
 
     changeset = ChatRoomForm.changeset(%{})
-
     rem_seconds = RoomServer.fetch_rem_seconds!(room_id)
+    [member_1_id, member_2_id] = RoomServer.fetch_member_ids!(room_id)
+
+    member_1_profile = Accounts.fetch_member_profile_by_member_id!(member_1_id)
+    member_2_profile = Accounts.fetch_member_profile_by_member_id!(member_2_id)
 
     {:ok,
       socket
       |> assign(:room_id, room_id)
+      |> assign(:member_1_profile, member_1_profile)
+      |> assign(:member_2_profile, member_2_profile)
       |> assign(:rem_seconds, rem_seconds)
       |> assign(:form, to_form(changeset))}
   end

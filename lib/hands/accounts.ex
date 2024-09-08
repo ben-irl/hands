@@ -394,6 +394,12 @@ defmodule Hands.Accounts do
     Repo.one!(query)
   end
 
+  def fetch_member_profile_by_member_id!(member_id) do
+    query = from mp in MemberProfile, where: mp.member_id == ^member_id, preload: [:member]
+
+    Repo.one!(query)
+  end
+
   @doc """
   Creates a member_profile.
 

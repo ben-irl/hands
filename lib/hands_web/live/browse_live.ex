@@ -97,6 +97,7 @@ defmodule HandsWeb.BrowseLive do
     end
   end
 
+  @impl true
   def handle_info(%Hands.Chat.Events.RoomOpened{room_id: room_id}, socket) do
     {:noreply,
       socket
