@@ -11,10 +11,10 @@ defmodule HandsWeb.ChatRoomLive do
   def render(assigns) do
     ~H"""
     <div>
-      <div class="app-chat-members m-auto flex items-center">
+      <div class="app-chat-members m-auto flex items-center border-b border-zinc-300 pb-4">
         <div class="py-2 px-4 rounded-full bg-green-100">
           <.icon name="hero-user-solid" class="m-auto text-zinc-600 w-8 h-8" />
-          <div class="inline-block"><%= @member_1_profile.name %></div>
+          <div class="inline-block"><%= @member_profiles[@member_1_id].name %></div>
         </div>
         <div
           id="app-room-countdown"
@@ -26,7 +26,7 @@ defmodule HandsWeb.ChatRoomLive do
         </div>
         <div class="py-2 px-4 rounded-full bg-orange-100">
           <.icon name="hero-user-solid" class="m-auto text-zinc-600 w-8 h-8" />
-          <div class="inline-block"><%= @member_2_profile.name %></div>
+          <div class="inline-block"><%= @member_profiles[@member_2_id].name %></div>
         </div>
       </div>
 
@@ -35,12 +35,16 @@ defmodule HandsWeb.ChatRoomLive do
         phx-update="stream"
       >
         <div id={dom_id} :for={{dom_id, message} <- @streams.messages}>
-          <p><%= message.message %></p>
-          <b><%= message.member_id %></b>
+          <p class={member_msg_class(@member_1_id, @member_2_id, message.member_id)}><%= message.message %></p>
+          <p class={member_align_class(@member_1_id, @member_2_id, message.member_id)}>
+            <span class={member_bg_class(@member_1_id, @member_2_id, message.member_id)}>
+              <%= @member_profiles[message.member_id].name %>
+            </span>
+          </p>
         </div>
       </main>
 
-      <.simple_form for={@form} phx-submit="send" class="m-0 p-0">
+      <.simple_form for={@form} phx-submit="send" class="m-0 p-0 bg-white">
         <div
           class="w-full fixed left-0 bottom-0 right-0 flex items-center m-0 p-4 border-t border-zinc-300"
           style="margin: 0;"
@@ -63,6 +67,17 @@ defmodule HandsWeb.ChatRoomLive do
     """
   end
 
+  # Last minute hack.
+  defp member_msg_class(match_1_id, _, match_1_id), do: "px-4 py-2 text-left"
+  defp member_msg_class(_, match_2_id, match_2_id), do: "px-4 py-2 text-right"
+
+
+  defp member_align_class(match_1_id, _, match_1_id), do: ""
+  defp member_align_class(_, match_2_id, match_2_id), do: "text-right"
+
+  defp member_bg_class(match_1_id, _, match_1_id), do: "px-4 py-2 rounded-full bg-green-100"
+  defp member_bg_class(_, match_2_id, match_2_id), do: "px-4 py-2 rounded-full bg-orange-100"
+
   @impl true
   def mount(%{"room_id" => room_id}, _session, socket) do
     if connected?(socket) do
@@ -72,15 +87,16 @@ defmodule HandsWeb.ChatRoomLive do
     changeset = ChatRoomForm.changeset(%{})
     rem_seconds = RoomServer.fetch_rem_seconds!(room_id)
     [member_1_id, member_2_id] = RoomServer.fetch_member_ids!(room_id)
-
-    member_1_profile = Accounts.fetch_member_profile_by_member_id!(member_1_id)
-    member_2_profile = Accounts.fetch_member_profile_by_member_id!(member_2_id)
-
+    member_profiles = %{
+      member_1_id => Accounts.fetch_member_profile_by_member_id!(member_1_id),
+      member_2_id => Accounts.fetch_member_profile_by_member_id!(member_2_id)
+    }
     {:ok,
       socket
       |> assign(:room_id, room_id)
-      |> assign(:member_1_profile, member_1_profile)
-      |> assign(:member_2_profile, member_2_profile)
+      |> assign(:member_profiles, member_profiles)
+      |> assign(:member_1_id, member_1_id)
+      |> assign(:member_2_id, member_2_id)
       |> assign(:rem_seconds, rem_seconds)
       |> assign(:form, to_form(changeset))
       |> stream_configure(:messages, dom_id: &("message-#{&1.id}"))
