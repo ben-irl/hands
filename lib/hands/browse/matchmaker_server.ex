@@ -24,6 +24,6 @@ defmodule Hands.Browse.MatchmakerServer do
   end
 
   defp schedule_work do
-    Process.send_after(self(), :work, :timer.minutes(1))
+    Process.send_after(self(), :work, :timer.seconds(20))
   end
 end

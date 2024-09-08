@@ -26,3 +26,7 @@ but just there to keep tests happy!
 
 - MemberProfile form doesn't show error when there is no wanted genders selected!
   - It does have the error in the changeset!
+
+## BrowserLive demo code
+
+- Added random mutual liking for demo purposes.

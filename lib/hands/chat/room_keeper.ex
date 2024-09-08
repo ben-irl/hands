@@ -37,10 +37,10 @@ defmodule Hands.Chat.RoomKeeper do
     end
   end
 
-  # defp mark_match_as_used(match_id) do
-  #   query = from m in Browse.Match, where: m.id == ^match_id
-  #   Repo.update_all(query, set: [is_used: true])
-  # end
+  def mark_match_as_used(match_id) do
+    query = from m in Browse.Match, where: m.id == ^match_id
+    Repo.update_all(query, set: [is_used: true])
+  end
 
   def fetch_matches() do
     query = from m in Browse.Match, where: m.is_used != true

@@ -58,6 +58,14 @@ defmodule HandsWeb.BrowseLive do
       :like ->
         Browse.create_seen!(member_id, seen_member_id)
         Browse.create_like!(member_id, seen_member_id)
+
+
+        # TODO: Remove this demo code that auto mutually likes a random like
+        if Enum.random(1..10) == 10 do
+          Browse.create_seen!(seen_member_id, member_id)
+          Browse.create_like!(seen_member_id, member_id)
+        end
+
     end
 
     {:noreply, assign_form(socket)}
@@ -87,6 +95,16 @@ defmodule HandsWeb.BrowseLive do
       |> put_flash(:info, "Please fill in your profile")
       |> redirect(to: ~p"/account/profile")
     end
+  end
+
+  def handle_info(%Hands.Chat.Events.RoomOpened{room_id: room_id}, socket) do
+    {:noreply,
+      socket
+      |> redirect(to: ~p"/chat/#{room_id}")}
+  end
+
+  def handle_info(_other_events, socket) do
+    {:noreply, socket}
   end
 
   defp random_description() do

@@ -22,8 +22,37 @@ import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
+let Hooks = {}
+
+Hooks.Countdown = {
+  mounted() {
+    const startSeconds = parseInt(this.el.dataset.startsecs || "0", 10);
+    this.startCountdown(startSeconds);
+  },
+
+  startCountdown(seconds) {
+    let timeLeft = seconds;
+    this.updateDisplay(timeLeft);
+
+    const timer = setInterval(() => {
+      timeLeft--;
+      if (timeLeft < 0) {
+        clearInterval(timer);
+        this.el.textContent = "Countdown finished!";
+      } else {
+        this.updateDisplay(timeLeft);
+      }
+    }, 1000);
+  },
+
+  updateDisplay(timeLeft) {
+    this.el.textContent = `Time left: ${timeLeft} seconds`;
+  }
+}
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
+  hooks: Hooks, 
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken}
 })

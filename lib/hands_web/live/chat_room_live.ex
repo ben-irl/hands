@@ -9,6 +9,14 @@ defmodule HandsWeb.ChatRoomLive do
   def render(assigns) do
     ~H"""
     <div>
+      <div
+        id="app-room-countdown"
+        phx-update="ignore"
+        phx-hook="Countdown"
+        data-startsecs={@rem_seconds}
+      >
+      </div>
+
       <.simple_form for={@form} phx-submit="send" class="m-0 p-0">
         <div
           class="w-full fixed left-0 bottom-0 right-0 flex items-center m-0 p-4 border-t border-zinc-300"
@@ -40,9 +48,12 @@ defmodule HandsWeb.ChatRoomLive do
 
     changeset = ChatRoomForm.changeset(%{})
 
+    rem_seconds = RoomServer.fetch_rem_seconds!(room_id)
+
     {:ok,
       socket
       |> assign(:room_id, room_id)
+      |> assign(:rem_seconds, rem_seconds)
       |> assign(:form, to_form(changeset))}
   end
 
@@ -74,8 +85,11 @@ defmodule HandsWeb.ChatRoomLive do
   end
 
   def handle_info(%Events.RoomClosed{} = _event, socket) do
-    # TODO: Convert to UI block and insert into stream
-    {:noreply, socket}
+    # TODO: Redirect to feedback form + meetup organization form
+    {:noreply,
+      socket
+      |> put_flash(:error, "Your chat ended.")
+      |> redirect(to: ~p"/browse")}
   end
 
   def handle_info(%Events.MemberJoined{} = _event, socket) do
@@ -89,8 +103,11 @@ defmodule HandsWeb.ChatRoomLive do
   end
 
   def handle_info(%Events.MemberQuit{} = _event, socket) do
-    # TODO: Convert to UI block and insert into stream
-    {:noreply, socket}
+    # TODO: Redirect to feedback form + meetup organization form
+    {:noreply,
+      socket
+      |> put_flash(:error, "Your chat ended.")
+      |> redirect(to: ~p"/browse")}
   end
 
   def handle_info(%Events.MessageSent{} = _event, socket) do
