@@ -1,6 +1,7 @@
 defmodule HandsWeb.ChatRoomLive do
   use HandsWeb, :live_view
   alias HandsWeb.ChatRoomForm
+  alias HandsWeb.ChatRoomMessage
   alias Hands.Shared.Topics
   alias Hands.Accounts
   alias Hands.Chat.RoomServer
@@ -28,6 +29,16 @@ defmodule HandsWeb.ChatRoomLive do
           <div class="inline-block"><%= @member_2_profile.name %></div>
         </div>
       </div>
+
+      <main
+        id="app-chat-messages"
+        phx-update="stream"
+      >
+        <div id={dom_id} :for={{dom_id, message} <- @streams.messages}>
+          <p><%= message.message %></p>
+          <b><%= message.member_id %></b>
+        </div>
+      </main>
 
       <.simple_form for={@form} phx-submit="send" class="m-0 p-0">
         <div
@@ -71,7 +82,10 @@ defmodule HandsWeb.ChatRoomLive do
       |> assign(:member_1_profile, member_1_profile)
       |> assign(:member_2_profile, member_2_profile)
       |> assign(:rem_seconds, rem_seconds)
-      |> assign(:form, to_form(changeset))}
+      |> assign(:form, to_form(changeset))
+      |> stream_configure(:messages, dom_id: &("message-#{&1.id}"))
+      # TODO: Get messages or events from RoomServer memory
+      |> stream(:messages, [])}
   end
 
   # TODO: State machine to prevent actions until room server is reachable via RoomRegistry
@@ -109,14 +123,21 @@ defmodule HandsWeb.ChatRoomLive do
       |> redirect(to: ~p"/browse")}
   end
 
-  def handle_info(%Events.MemberJoined{} = _event, socket) do
+  def handle_info(%Events.MemberJoined{} = event, socket) do
     # TODO: Convert to UI block and insert into stream
-    {:noreply, socket}
+    %{member_id: member_id} = event
+
+    message = ChatRoomMessage.new!(member_id, "Joined the chat")
+
+    {:noreply, stream_insert(socket, :messages, message)}
   end
 
-  def handle_info(%Events.MemberLeft{} = _event, socket) do
-    # TODO: Convert to UI block and insert into stream
-    {:noreply, socket}
+  def handle_info(%Events.MemberLeft{} = event, socket) do
+    %{member_id: member_id} = event
+
+    message = ChatRoomMessage.new!(member_id, "Left the chat")
+
+    {:noreply, stream_insert(socket, :messages, message)}
   end
 
   def handle_info(%Events.MemberQuit{} = _event, socket) do
@@ -127,9 +148,13 @@ defmodule HandsWeb.ChatRoomLive do
       |> redirect(to: ~p"/browse")}
   end
 
-  def handle_info(%Events.MessageSent{} = _event, socket) do
+  def handle_info(%Events.MessageSent{} = event, socket) do
     # TODO: Convert to UI block and insert into stream
-    {:noreply, socket}
+    %{member_id: member_id, message: message} = event
+
+    message = ChatRoomMessage.new!(member_id, message)
+
+    {:noreply, stream_insert(socket, :messages, message)}
   end
 
   def handle_info(%Events.MessageSeen{} = _event, socket) do
